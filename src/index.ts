@@ -34,14 +34,12 @@ class Blindnet {
     const body = {
       ...gr,
       app_id: this.appId,
-      // TODO: check if UTC
       nbf: Math.floor(Date.now() / 1000),
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + 3600
     }
 
-    // return JWTHelper.createAndSign('stjwt', body, this.appKey)
-    return JWTHelper.createAndSign('ojwt', body, this.appKey)
+    return JWTHelper.createAndSign('stjwt', body, this.appKey)
   }
 
   createJwt(userId: string, groupId: string) {
@@ -49,7 +47,6 @@ class Blindnet {
       app_id: this.appId,
       user_id: userId,
       user_group_id: groupId,
-      // TODO: check if UTC
       nbf: Math.floor(Date.now() / 1000),
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + 3600 * 24 * 1
@@ -62,7 +59,6 @@ class Blindnet {
     console.log('client jwt updated')
     const body = {
       app_id: this.appId,
-      // TODO: check if UTC
       nbf: Math.floor(Date.now() / 1000),
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + 3600 * 24 * 1
@@ -71,18 +67,23 @@ class Blindnet {
     this.clientJwt = await JWTHelper.createAndSign('cl', body, this.appKey)
   }
 
-  private async repeat(f: () => Promise<Response>, n: number) {
-    const resp = await f()
+  private async repeatAuth(f: () => Promise<Response>, n: number, err: string) {
+    let resp
+    try {
+      resp = await f()
+    } catch {
+      throw new BlindnetServiceError('Could not connect to blindnet')
+    }
 
     if (resp.status === 401 && n > 0) {
       await this.updateClientJwt()
-      return this.repeat(f, n - 1)
+      return this.repeatAuth(f, n - 1, err)
     } else if (resp.status === 401) {
       throw new AuthenticationError()
     } else if (resp.status === 200) {
       return undefined
     } else {
-      throw new BlindnetServiceError('TODO')
+      throw new BlindnetServiceError(err)
     }
   }
 
@@ -96,7 +97,7 @@ class Blindnet {
         }
       })
 
-    return await this.repeat(f, 1)
+    return await this.repeatAuth(f, 1, `Error deleting data with id ${dataId}`)
   }
 
   async revokeDataAccess(userId: string) {
@@ -109,7 +110,7 @@ class Blindnet {
         }
       })
 
-    return await this.repeat(f, 1)
+    return await this.repeatAuth(f, 1, `Error revoking access to user ${userId}`)
   }
 
   async deleteUser(userId: string) {
@@ -122,7 +123,7 @@ class Blindnet {
         }
       })
 
-    return await this.repeat(f, 1)
+    return await this.repeatAuth(f, 1, `Error deleting user ${userId}`)
   }
 
   async deleteAllUsersInGroup(groupId: string) {
@@ -135,7 +136,7 @@ class Blindnet {
         }
       })
 
-    return await this.repeat(f, 1)
+    return await this.repeatAuth(f, 1, `Error deleting group ${groupId}`)
   }
 }
 

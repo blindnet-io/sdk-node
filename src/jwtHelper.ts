@@ -4,8 +4,7 @@ import { arr2b64url } from './helper'
 
 class JWTHelper {
 
-  // static async createAndSign(type: 'jwt' | 'stjwt' | 'cl', body: any, key: Uint8Array) {
-  static async createAndSign(type: 'jwt' | 'ojwt' | 'cl', body: any, key: Uint8Array) {
+  static async createAndSign(type: 'jwt' | 'stjwt' | 'cl', body: any, key: Uint8Array) {
     const textEncoder = new TextEncoder()
     const textDecoder = new TextDecoder()
 
