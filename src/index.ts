@@ -24,7 +24,7 @@ class Blindnet {
     return new Blindnet(appKey, appId, endpoint)
   }
 
-  createStJwt(group: string | string[]): Promise<string> {
+  createTempUserToken(group: string | string[]): Promise<string> {
     let gr = undefined
     if (typeof group === 'string')
       gr = { user_group_id: group }
@@ -42,7 +42,7 @@ class Blindnet {
     return JWTHelper.createAndSign('stjwt', body, this.appKey)
   }
 
-  createJwt(userId: string, groupId: string) {
+  createUserToken(userId: string, groupId: string) {
     const body = {
       app_id: this.appId,
       user_id: userId,
@@ -87,7 +87,7 @@ class Blindnet {
     }
   }
 
-  async deleteData(dataId: string) {
+  async forgetData(dataId: string) {
     const f = () =>
       fetch(`${this.endpoint}/api/v${this.protocolVersion}/documents/${dataId}`, {
         method: 'DELETE',
@@ -100,7 +100,7 @@ class Blindnet {
     return await this.repeatAuth(f, 1, `Error deleting data with id ${dataId}`)
   }
 
-  async revokeDataAccess(userId: string) {
+  async revokeAccess(userId: string) {
     const f = () =>
       fetch(`${this.endpoint}/api/v${this.protocolVersion}/documents/user/${userId}`, {
         method: 'DELETE',
@@ -113,7 +113,7 @@ class Blindnet {
     return await this.repeatAuth(f, 1, `Error revoking access to user ${userId}`)
   }
 
-  async deleteUser(userId: string) {
+  async forgetUser(userId: string) {
     const f = () =>
       fetch(`${this.endpoint}/api/v${this.protocolVersion}/new/users/${userId}`, {
         method: 'DELETE',
@@ -126,7 +126,7 @@ class Blindnet {
     return await this.repeatAuth(f, 1, `Error deleting user ${userId}`)
   }
 
-  async deleteAllUsersInGroup(groupId: string) {
+  async deleteGroup(groupId: string) {
     const f = () =>
       fetch(`${this.endpoint}/api/v${this.protocolVersion}/new/group/${groupId}`, {
         method: 'DELETE',
@@ -140,6 +140,4 @@ class Blindnet {
   }
 }
 
-export {
-  Blindnet
-}
+export default Blindnet
