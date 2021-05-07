@@ -1,5 +1,3 @@
-'use strict'
-
 import fetch from 'node-fetch'
 import { Response } from 'node-fetch'
 import { AuthenticationError, BlindnetServiceError } from './error'
@@ -56,7 +54,6 @@ class Blindnet {
   }
 
   private async updateClientJwt() {
-    console.log('client jwt updated')
     const body = {
       app_id: this.appId,
       nbf: Math.floor(Date.now() / 1000),
@@ -115,7 +112,7 @@ class Blindnet {
 
   async forgetUser(userId: string) {
     const f = () =>
-      fetch(`${this.endpoint}/api/v${this.protocolVersion}/new/users/${userId}`, {
+      fetch(`${this.endpoint}/api/v${this.protocolVersion}/users/${userId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -128,7 +125,7 @@ class Blindnet {
 
   async deleteGroup(groupId: string) {
     const f = () =>
-      fetch(`${this.endpoint}/api/v${this.protocolVersion}/new/group/${groupId}`, {
+      fetch(`${this.endpoint}/api/v${this.protocolVersion}/group/${groupId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -140,4 +137,4 @@ class Blindnet {
   }
 }
 
-export default Blindnet
+module.exports = Blindnet
