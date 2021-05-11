@@ -137,4 +137,4 @@ class Blindnet {
   }
 }
 
-module.exports = Blindnet
+export = Blindnet

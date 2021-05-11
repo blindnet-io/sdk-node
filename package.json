@@ -8,7 +8,7 @@
     "/lib"
   ],
   "scripts": {
-    "build-lib": "./node_modules/typescript/bin/tsc",
+    "build": "./node_modules/typescript/bin/tsc",
     "test": "./node_modules/mocha/bin/mocha --reporter spec --require ts-node/register test/**/*.test.ts"
   },
   "keywords": [
