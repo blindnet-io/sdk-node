@@ -120,7 +120,7 @@ class Blindnet {
     return await this.repeatAuth(f, 1, `Error deleting user ${userId}`)
   }
 
-  async deleteGroup(groupId: string) {
+  async forgetGroup(groupId: string) {
     const f = () =>
       fetch(`${this.endpoint}/api/v${this.protocolVersion}/group/${groupId}`, {
         method: 'DELETE',
