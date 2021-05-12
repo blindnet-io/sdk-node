@@ -1,5 +1,6 @@
 import fetch from 'node-fetch'
 import { Response } from 'node-fetch'
+import { v4 as uuidv4 } from 'uuid';
 import { AuthenticationError, BlindnetServiceError } from './error'
 import { b642arr, arr2b64 } from './helper'
 import { JWTHelper } from './jwtHelper'
@@ -22,31 +23,28 @@ class Blindnet {
     return new Blindnet(appKey, appId, endpoint)
   }
 
-  createTempUserToken(group: string | string[]): Promise<string> {
+  createTempUserToken(param: string | string[]): Promise<string> {
     let gr = undefined
-    if (typeof group === 'string')
-      gr = { user_group_id: group }
+    if (typeof param === 'string')
+      gr = { gid: param }
     else
-      gr = { user_id: group }
+      gr = { uids: param }
 
     const body = {
       ...gr,
-      app_id: this.appId,
-      nbf: Math.floor(Date.now() / 1000),
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 3600
+      app: this.appId,
+      tid: uuidv4(),
+      exp: Math.floor(Date.now() / 1000) + 3600 * 24
     }
 
-    return JWTHelper.createAndSign('stjwt', body, this.appKey)
+    return JWTHelper.createAndSign('tjwt', body, this.appKey)
   }
 
   createUserToken(userId: string, groupId: string) {
     const body = {
-      app_id: this.appId,
-      user_id: userId,
-      user_group_id: groupId,
-      nbf: Math.floor(Date.now() / 1000),
-      iat: Math.floor(Date.now() / 1000),
+      app: this.appId,
+      uid: userId,
+      gid: groupId,
       exp: Math.floor(Date.now() / 1000) + 3600 * 24 * 1
     }
 
@@ -55,13 +53,12 @@ class Blindnet {
 
   private async updateClientJwt() {
     const body = {
-      app_id: this.appId,
-      nbf: Math.floor(Date.now() / 1000),
-      iat: Math.floor(Date.now() / 1000),
+      app: this.appId,
+      tid: uuidv4(),
       exp: Math.floor(Date.now() / 1000) + 3600 * 24 * 1
     }
 
-    this.clientJwt = await JWTHelper.createAndSign('cl', body, this.appKey)
+    this.clientJwt = await JWTHelper.createAndSign('cjwt', body, this.appKey)
   }
 
   private async repeatAuth(f: () => Promise<Response>, n: number, err: string) {
