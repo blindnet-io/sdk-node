@@ -1,8 +1,7 @@
 import * as chai from 'chai'
 import * as mocha from 'mocha'
 import * as cc from 'chai-as-promised'
-import { Blindnet } from '../src'
-
+const { Blindnet } = require('../src')
 
 chai.use(require('chai-as-promised'))
 const { expect } = chai

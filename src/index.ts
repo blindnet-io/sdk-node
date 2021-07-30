@@ -13,17 +13,19 @@ class Blindnet {
   private protocolVersion: string = "1"
 
   constructor(appKey: string, appId: string, endpoint: string) {
-    this.appKey = b642arr(appKey)
+    this.appKey = b642arr(appKey).slice(0, 32)
     this.appId = appId
     this.endpoint = endpoint
     this.updateClientJwt()
   }
 
   static async init(appKey: string, appId: string, endpoint: string = 'https://api.blindnet.io') {
-    return new Blindnet(appKey, appId, endpoint)
+    const instance = new Blindnet(appKey, appId, endpoint)
+    await new Promise(resolve => setTimeout(resolve, 0))
+    return instance
   }
 
-  createTempUserToken(param: string | string[]): Promise<string> {
+  static ctut(appKey: Uint8Array, appId: string, param: string | string[]): Promise<string> {
     let gr = undefined
     if (typeof param === 'string')
       gr = { gid: param }
@@ -32,23 +34,39 @@ class Blindnet {
 
     const body = {
       ...gr,
-      app: this.appId,
+      app: appId,
       tid: uuidv4(),
       exp: Math.floor(Date.now() / 1000) + 3600 * 24
     }
 
-    return JWTHelper.createAndSign('tjwt', body, this.appKey)
+    return JWTHelper.createAndSign('tjwt', body, appKey)
   }
 
-  createUserToken(userId: string, groupId: string) {
+  createTempUserToken(param: string | string[]): Promise<string> {
+    return Blindnet.ctut(this.appKey, this.appId, param)
+  }
+
+  static createTempUserToken(appKey: string, appId: string, param: string | string[]): Promise<string> {
+    return Blindnet.ctut(b642arr(appKey).slice(0, 32), appId, param)
+  }
+
+  static cut(appKey: Uint8Array, appId: string, userId: string, groupId: string) {
     const body = {
-      app: this.appId,
+      app: appId,
       uid: userId,
       gid: groupId,
       exp: Math.floor(Date.now() / 1000) + 3600 * 24 * 1
     }
 
-    return JWTHelper.createAndSign('jwt', body, this.appKey)
+    return JWTHelper.createAndSign('jwt', body, appKey)
+  }
+
+  createUserToken(userId: string, groupId: string = '') {
+    return Blindnet.cut(this.appKey, this.appId, userId, groupId)
+  }
+
+  static createUserToken(appKey: string, appId: string, userId: string, groupId: string = '') {
+    return Blindnet.cut(b642arr(appKey).slice(0, 32), appId, userId, groupId)
   }
 
   private async updateClientJwt() {
