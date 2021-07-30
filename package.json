@@ -1,6 +1,6 @@
 {
-  "name": "blindnet-sdk-node",
-  "version": "1.0.5",
+  "name": "@blindnet/sdk-node",
+  "version": "0.0.1",
   "description": "The JavaScript server SDK for blindnet.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -8,8 +8,10 @@
     "/lib"
   ],
   "scripts": {
-    "build": "./node_modules/typescript/bin/tsc",
-    "test": "./node_modules/mocha/bin/mocha --reporter spec --require ts-node/register test/**/*.test.ts"
+    "clean": "rimraf lib",
+    "prepare": "husky install",
+    "test": "./node_modules/mocha/bin/mocha --reporter spec --require ts-node/register test/**/*.test.ts",
+    "build": "npm run clean && ./node_modules/typescript/bin/tsc"
   },
   "keywords": [
     "blindnet"
@@ -38,7 +40,9 @@
     "@types/node-fetch": "^2.5.10",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
+    "husky": "^7.0.1",
     "mocha": "^8.3.2",
+    "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4"
   }

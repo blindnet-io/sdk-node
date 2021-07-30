@@ -1,1 +1,1 @@
-# blindnet-sdk-node
+# Blindnet Server SDK for Node.js
