@@ -28,7 +28,7 @@
 
 This is the JavaScript [server-side SDK](https://docs.blindnet.io/docs/extra/glossary#server-side-sdk) component of [blindnet devkit][devkit] allowing you to:
 
-- Generate [authentication tokens](https://docs.blindnet.io/docs/extra/glossary#authentication-token) to allow users to access blindnet.
+- Generate [authentication tokens](https://blindnet.dev/docs/glossary#authentication-token) to allow users to access blindnet.
 - Manage application users and data on blindnet.
 
 ## Get Started
