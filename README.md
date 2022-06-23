@@ -40,7 +40,7 @@ This is the JavaScript [server-side SDK](https://docs.blindnet.io/docs/extra/glo
 Use [npm][npm] or [yarn][yarn] to install the `@blindnet/sdk-javascript` package:
 
 ```bash
-npm install @blindnet/sdk-node
+npm install -S @blindnet/sdk-node
 ```
 
 ## Usage
