@@ -45,7 +45,7 @@ npm install -S @blindnet/sdk-node
 
 ## Usage
 
-📑 The API reference of blindnet devkit Node.js Server SDK is available on [blindnet.dev](https://docs.blindnet.io/docs/api_reference/server/node.js/latest).
+📑 The API reference of blindnet devkit Node.js Server SDK is available on [blindnet.dev](https://blindnet.dev/docs/api_reference/server/node.js/latest).
 
 ## Contributing
 
